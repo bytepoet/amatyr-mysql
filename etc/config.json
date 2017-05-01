@@ -2,7 +2,7 @@
     "db": {
         "host": "127.0.0.1",
         "database": "weewx",
-        "user": "weews",
+        "user": "weewx",
         "password": "SzechuanSauce",
         "table": "archive",
         "columns": {

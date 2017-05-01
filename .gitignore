@@ -1,2 +1,5 @@
 twitterconfig.json
 .git.old
+*.sublime-project
+*.sublime-workspace
+etc/config.json
