@@ -277,7 +277,7 @@ function year(match)
     
     local needsupdate = cjson.decode(dbreq[[
         SELECT
-        MAX(datetime) < (NOW() - INTERVAL '24 hours') AS needsupdate
+        MAX(datetime) < (NOW() - INTERVAL 24 hour) AS needsupdate
         FROM days
     ]])
     if needsupdate == ngx.null or needsupdate[1] == nil or needsupdate.error ~= nil then

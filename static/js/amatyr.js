@@ -175,8 +175,7 @@ var AmatYr = function(apiurl) {
                 /// XXX needs a black list for certain types that doesn't make sense
                 // like min daily_rain or min windSpeed
                 d3.json(apiurl + 'record/'+k+'/'+func+'?start='+year, function(json) { 
-                    if (json) {
-                        console.log(func, k, json);
+                    if (json && json[0]) {
                         if(json[0].hasOwnProperty('datetime') ){
                             record_weather.current[func+k+'date'] = json[0].datetime;
                             record_weather.current[func+k+'age'] = $.timeago(json[0].datetime);
