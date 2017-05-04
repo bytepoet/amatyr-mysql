@@ -94,7 +94,8 @@ I'm not the creator of amatyr, i just changed some things to work without custom
 5. Clone git and edit configs
 
     >sudo mkdir /home/amatyr  
-    git clone https://github.com/Zulmamwe/amatyr-mysql.git /home/amatyr
+    git clone https://github.com/Zulmamwe/amatyr-mysql.git /home/amatyr  
+    sudo chmod 750 /home/amatyr/etc/config.json
 
     download bootstrap and fontawesome  
     (bootstrap is old, im too lazy to rewrite this code, it's working so i dont bother)
