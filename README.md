@@ -124,7 +124,7 @@ I'm not the creator of amatyr, i just changed some things to work without custom
     >nano ~/.profile  
     
     add this to the end of file
-    >>PATH=$PATH:/usr/local/openresty/nginx/sbin  
+    >PATH=$PATH:/usr/local/openresty/nginx/sbin  
     export PATH
 
     apply changes
