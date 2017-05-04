@@ -50,25 +50,22 @@ Primary goal of the project is bringing modern and responsive design, suitable f
 
 3. Change weewx.conf
 
-    nano /etc/weewx/weewx.conf
+    > nano /etc/weewx/weewx.conf
 
-    #change weewx settings as you like
+    change weewx settings as you like  
+    here is only required changes:
 
-    #first we need to change in [[wx_binding]] section
-    #database = archive_sqlite
-    #to
+    first we need to change [[wx_binding]] section  
+    >database = archive_sqlite  
+    to  
     database = archive_mysql
 
-    #and in [DatabaseTypes] [[MySQL]] section
-    #change password to the user you just created in mysql
+    now in [DatabaseTypes] [[MySQL]] section
+    >change password to the user you just created in mysql (no quotes)  
+    password = password
 
-    #i also changed (this is optional) in [StdArchive] section
-    #archive_interval = 300
-    #to
-    archive_interval = 60
-
-    #after this restart weewx
-    service weewx restart
+    after this restart weewx
+    >service weewx restart
 
 4. Install openresty
 
