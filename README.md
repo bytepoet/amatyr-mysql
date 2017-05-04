@@ -21,68 +21,115 @@ Primary goal of the project is bringing modern and responsive design, suitable f
 ### Backend Components
 
 -   Openresty (nginx + luajit)
--   PostgreSQL
+-   MySQL
 
 
-### Getting weather data into SQL
+### Installation
 
-The frontend is somewhat loosely coupled with the backend, but it fetches data via JSON from the backend, so to get data displayed it must be accessible in that manner. There's 3 different ways to achieve that. Use one of these methods:
+1. Install weewx
 
--    Included with the project is a small python utility to read Davis Vantage .txt-logs and insert into SQL (davislogparser.py)
--    Inlucded with the project is a smal python utility to read the output from Weather Display Live and insert into SQL (wdparser.py)
--    Included is a patch (scripts/weewx-2.1.1.postgresql.patch) for (Weewx)[http://weewx.com] to be able to store data in PostgreSQL.
+    wget -qO - http://weewx.com/keys.html | sudo apt-key add -
+    wget -qO - http://weewx.com/apt/weewx.list | sudo tee /etc/apt/sources.list.d/weewx.list
+    sudo apt-get update
+    sudo apt-get install weewx python-mysqldb
 
-### Installation of the frontend
+2. Install mysql
 
-1. Clone this repostory
-1. Add bootstrap resources
-1. Add fontawesome resources
-1. Compile and install openresty, with LuaJit and Postgresql support.
-    Grab source at [Openresty](http://openresty.org)
+    sudo apt-get install mysql-server
+    #in next line dont forget to change 'password' to actual password
+    mysql -u root -p -e "CREATE USER 'weewx'@'localhost' IDENTIFIED BY 'password'; GRANT ALL PRIVILEGES ON *.* TO 'weewx'@'localhost'; FLUSH PRIVILEGES;"
 
-Run:
+    #disabling ONLY_FULL_GROUP_BY
+    nano /etc/mysql/my.cnf
+    #add this to the end of the file:
+    [mysqld]
+    sql_mode = "STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
 
-    ./configure --with-luajit  --with-http_addition_module --with-http_dav_module --with-http_geoip_module --with-http_gzip_static_module --with-http_image_filter_module --with-http_realip_module --with-http_stub_status_module --with-http_ssl_module --with-http_sub_module --with-http_xslt_module --with-ipv6 --with-http_postgres_module
+    #now restart mysql for changes to apply
+    service mysql restart
 
-And follow Openresty's own installation docs.
+3. Change weewx.conf
 
-1. Configure postgresql
-1. Configure the virtual host for nginx like this:
+    nano /etc/weewx/weewx.conf
 
-    lua_package_path '/home/yr/amatyr/?.lua;;';
+    #change weewx settings as you like
 
-    server {
-        listen	*:80;
-        server_name  yr.no;
+    #first we need to change in [[wx_binding]] section
+    #database = archive_sqlite
+    #to
+    database = archive_mysql
 
-        set $root /home/yr/amatyr/;
-        root   $root;
-        access_log /home/yr/amatyr/access.log;
-        error_log /home/yr/amatyr/error.log;
+    #and in [DatabaseTypes] [[MySQL]] section
+    #change password to the user you just created in mysql
 
-        location /api {
-           lua_code_cache off;
-           content_by_lua_file $root/pgrouter.lua;
-        }
-        location /static {
-            root $root;
-        }
+    #i also changed (this is optional) in [StdArchive] section
+    #archive_interval = 300
+    #to
+    archive_interval = 60
 
-        location / { try_files $uri @lua; }
-        location @lua {
-           lua_code_cache off;
-           content_by_lua_file $root/amatyr.lua;
-        }
-    }
+    #after this restart weewx
+    service weewx restart
 
-1. Install the resty postgresql driver from <https://github.com/azurewang/lua-resty-postgres>
-    One simple way to do this is put the postgres.lua in the default openresty folder:
+4. Install openresty
 
-    wget -O /usr/local/openresty/lualib/resty/postgres.lua  https://github.com/azurewang/lua-resty-postgres/raw/master/lib/resty/postgres.lua
+    wget https://openresty.org/download/openresty-1.11.2.3.tar.gz
+    tar -xvf openresty-1.11.2.3.tar.gz
+    cd openresty-1.11.2.3
+
+    #main openresty prerequisites
+    apt-get install libreadline-dev libncurses5-dev libpcre3-dev libssl-dev perl make build-essential curl
+
+    #prerequisites for this setup
+    apt-get install libxslt1-dev libgd-dev libgeoip-dev
+
+    ./configure --with-luajit  --with-http_addition_module --with-http_dav_module --with-http_geoip_module --with-http_gzip_static_module --with-http_image_filter_module --with-http_realip_module --with-http_stub_status_module --with-http_ssl_module --with-http_sub_module --with-http_xslt_module --with-ipv6
+    make install
+
+    cd /home
+    rm -dr openresty-1.11.2.3
+    rm openresty-1.11.2.3.tar.gz
+
+5. Clone git and edit configs
+
+    sudo mkdir /home/amatyr
+    git clone https://github.com/Zulmamwe/amatyr-mysql.git /home/amatyr
+
+    #download some libs
+    cd /home/amatyr/static
+    sudo apt-get install unzip
+    #bootstrap
+    wget http://getbootstrap.com/2.3.2/assets/bootstrap.zip
+    unzip bootstrap.zip
+    rm bootstrap.zip
+    #fontawesome
+    wget http://fontawesome.io/assets/font-awesome-4.7.0.zip
+    unzip font-awesome-4.7.0.zip
+    mkdir fa
+    mv font-awesome-4.7.0/* fa/
+    rm font-awesome-4.7.0.zip
+    rm -d font-awesome-4.7.0
+
+    cp /home/amatyr/etc/config.json.dist /home/amatyr/etc/config.json
+    nano /home/amatyr/etc/config.json
+
+    #change server name
+    nano /home/amatyr/nginx.conf
+
+    #add nginx path for fast start
+    nano ~/.profile
+    #add this to the end of file
+    PATH=$PATH:/usr/local/openresty/nginx/sbin
+    export PATH
+
+    #to apply changes
+    . ~/.profile
+    #now you can start nginx
+    nginx -c /home/amatyr/nginx.conf
+
 
 ### Live demo
 
-My personal installation of this project is running at <http://yr.hveem.no>
+Tor Hveem's personal installation of this project is running at <http://yr.hveem.no>
 It has a blog post to go with the setup at <http://hveem.no/raspberry-pi-davis-vue-weather-station-with-custom-frontend>
 
 ### License
