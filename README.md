@@ -6,6 +6,9 @@ The software is a modern HTML5 "single page app" using JavaScript to fetch data 
 
 Primary goal of the project is bringing modern and responsive design, suitable for desktop, tablet and mobile-sized screens. A secondary goal is just playing with new technology because it's fun :-) And I guess a goal is to display some pretty graphs and such for local weather!
 
+### About this git
+I'm not the creator of amatyr, i just changed some things to work without custom patches and other crutches. You can update anything to newer version freely (except bootstrap if you dont want to change classes in thml pages, if you do - please send me updated version and i will add it here =D) and everything should sstill work.
+
 ### Frontend Components
 
 -    D3 js
@@ -79,50 +82,58 @@ Primary goal of the project is bringing modern and responsive design, suitable f
     prerequisites for this setup
     >apt-get install libxslt1-dev libgd-dev libgeoip-dev
 
+	configure and install
     >./configure --with-luajit  --with-http_addition_module --with-http_dav_module --with-http_geoip_module --with-http_gzip_static_module --with-http_image_filter_module --with-http_realip_module --with-http_stub_status_module --with-http_ssl_module --with-http_sub_module --with-http_xslt_module --with-ipv6  
     make install
 
+	remove sources
     >cd /home  
     rm -dr openresty-1.11.2.3  
     rm openresty-1.11.2.3.tar.gz  
 
 5. Clone git and edit configs
 
-    sudo mkdir /home/amatyr
+    >sudo mkdir /home/amatyr  
     git clone https://github.com/Zulmamwe/amatyr-mysql.git /home/amatyr
 
-    #download some libs
-    cd /home/amatyr/static
-    sudo apt-get install unzip
-    #bootstrap
-    wget http://getbootstrap.com/2.3.2/assets/bootstrap.zip
-    unzip bootstrap.zip
-    rm bootstrap.zip
-    #fontawesome
-    wget http://fontawesome.io/assets/font-awesome-4.7.0.zip
-    unzip font-awesome-4.7.0.zip
-    mkdir fa
-    mv font-awesome-4.7.0/* fa/
-    rm font-awesome-4.7.0.zip
-    rm -d font-awesome-4.7.0
+    download bootstrap and fontawesome  
+    (bootstrap is old, im too lazy to rewrite this code)  
+    (more important - it's working so i dont bother)
+    >cd /home/amatyr/static  
+    sudo apt-get install unzip  
+    #bootstrap  
+    wget http://getbootstrap.com/2.3.2/assets/bootstrap.zip  
+    unzip bootstrap.zip  
+    rm bootstrap.zip  
+    #fontawesome  
+    wget http://fontawesome.io/assets/font-awesome-4.7.0.zip  
+    unzip font-awesome-4.7.0.zip  
+    mkdir fa  
+    mv font-awesome-4.7.0/* fa/  
+    rm font-awesome-4.7.0.zip  
+    rm -d font-awesome-4.7.0  
 
-    cp /home/amatyr/etc/config.json.dist /home/amatyr/etc/config.json
+  	change password to db, set name, map, cam, year
+    >cp /home/amatyr/etc/config.json.dist /home/amatyr/etc/config.json  
     nano /home/amatyr/etc/config.json
 
-    #change server name
-    nano /home/amatyr/nginx.conf
+    change server name
+    >nano /home/amatyr/nginx.conf
 
-    #add nginx path for fast start
-    nano ~/.profile
-    #add this to the end of file
-    PATH=$PATH:/usr/local/openresty/nginx/sbin
+    add nginx path for fast start
+    >nano ~/.profile  
+    
+    add this to the end of file
+    >>PATH=$PATH:/usr/local/openresty/nginx/sbin  
     export PATH
 
-    #to apply changes
-    . ~/.profile
-    #now you can start nginx
-    nginx -c /home/amatyr/nginx.conf
+    apply changes
+    >. ~/.profile
+    
+    now you can start nginx
+    > nginx -c /home/amatyr/nginx.conf
 
+6. Everything should work now.
 
 ### Live demo
 
