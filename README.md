@@ -69,22 +69,22 @@ Primary goal of the project is bringing modern and responsive design, suitable f
 
 4. Install openresty
 
-    wget https://openresty.org/download/openresty-1.11.2.3.tar.gz
-    tar -xvf openresty-1.11.2.3.tar.gz
-    cd openresty-1.11.2.3
+    > wget https://openresty.org/download/openresty-1.11.2.3.tar.gz  
+    tar -xvf openresty-1.11.2.3.tar.gz  
+    cd openresty-1.11.2.3  
 
-    #main openresty prerequisites
-    apt-get install libreadline-dev libncurses5-dev libpcre3-dev libssl-dev perl make build-essential curl
+    main openresty prerequisites  
+    > apt-get install libreadline-dev libncurses5-dev libpcre3-dev libssl-dev perl make build-essential curl
+    
+    prerequisites for this setup
+    >apt-get install libxslt1-dev libgd-dev libgeoip-dev
 
-    #prerequisites for this setup
-    apt-get install libxslt1-dev libgd-dev libgeoip-dev
-
-    ./configure --with-luajit  --with-http_addition_module --with-http_dav_module --with-http_geoip_module --with-http_gzip_static_module --with-http_image_filter_module --with-http_realip_module --with-http_stub_status_module --with-http_ssl_module --with-http_sub_module --with-http_xslt_module --with-ipv6
+    >./configure --with-luajit  --with-http_addition_module --with-http_dav_module --with-http_geoip_module --with-http_gzip_static_module --with-http_image_filter_module --with-http_realip_module --with-http_stub_status_module --with-http_ssl_module --with-http_sub_module --with-http_xslt_module --with-ipv6  
     make install
 
-    cd /home
-    rm -dr openresty-1.11.2.3
-    rm openresty-1.11.2.3.tar.gz
+    >cd /home  
+    rm -dr openresty-1.11.2.3  
+    rm openresty-1.11.2.3.tar.gz  
 
 5. Clone git and edit configs
 
