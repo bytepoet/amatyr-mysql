@@ -28,9 +28,9 @@ Primary goal of the project is bringing modern and responsive design, suitable f
 
 1. Install weewx
 
-    wget -qO - http://weewx.com/keys.html | sudo apt-key add -
-    wget -qO - http://weewx.com/apt/weewx.list | sudo tee /etc/apt/sources.list.d/weewx.list
-    sudo apt-get update
+    > wget -qO - http://weewx.com/keys.html | sudo apt-key add -  
+    wget -qO - http://weewx.com/apt/weewx.list | sudo tee /etc/apt/sources.list.d/weewx.list  
+    sudo apt-get update  
     sudo apt-get install weewx python-mysqldb
 
 2. Install mysql
@@ -166,4 +166,3 @@ AmatYr uses a BSD 3-clause license.
     LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
     NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
