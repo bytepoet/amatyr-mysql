@@ -43,8 +43,10 @@ Primary goal of the project is bringing modern and responsive design, suitable f
     disabling ONLY_FULL_GROUP_BY  
     add this to the end of the file /etc/mysql/my.cnf  
     > [mysqld]  
-    sql_mode = "STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION" 
-    service mysql restart
+    sql_mode = "STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"  
+    
+    now restart mysql  
+    > service mysql restart
 
 3. Change weewx.conf
 
