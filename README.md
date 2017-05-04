@@ -35,13 +35,14 @@ Primary goal of the project is bringing modern and responsive design, suitable f
     sudo apt-get install weewx python-mysqldb
 
 2. Install mysql
+
 	dont forget to change 'password' to actual password
     > sudo apt-get install mysql-server  
     mysql -u root -p -e "CREATE USER 'weewx'@'localhost' IDENTIFIED BY 'password'; GRANT ALL PRIVILEGES ON *.* TO 'weewx'@'localhost'; FLUSH PRIVILEGES;" 
     
-    #disabling ONLY_FULL_GROUP_BY
-    #add this to the end of the file /etc/mysql/my.cnf  
-    > [mysqld]
+    disabling ONLY_FULL_GROUP_BY  
+    add this to the end of the file /etc/mysql/my.cnf  
+    > [mysqld]  
     sql_mode = "STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION" 
     service mysql restart
 
