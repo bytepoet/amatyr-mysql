@@ -97,8 +97,7 @@ I'm not the creator of amatyr, i just changed some things to work without custom
     git clone https://github.com/Zulmamwe/amatyr-mysql.git /home/amatyr
 
     download bootstrap and fontawesome  
-    (bootstrap is old, im too lazy to rewrite this code)  
-    (more important - it's working so i dont bother)
+    (bootstrap is old, im too lazy to rewrite this code, it's working so i dont bother)
     >cd /home/amatyr/static  
     sudo apt-get install unzip  
     #bootstrap  
@@ -115,7 +114,9 @@ I'm not the creator of amatyr, i just changed some things to work without custom
 
     change password to db, set name, map, cam, year
     >cp /home/amatyr/etc/config.json.dist /home/amatyr/etc/config.json  
+    sudo chmod 750 /home/amatyr/etc/config.json  
     nano /home/amatyr/etc/config.json
+    
 
     change server name
     >nano /home/amatyr/nginx.conf
