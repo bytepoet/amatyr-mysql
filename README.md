@@ -114,7 +114,6 @@ I'm not the creator of amatyr, i just changed some things to work without custom
 
     change password to db, set name, map, cam, year
     >cp /home/amatyr/etc/config.json.dist /home/amatyr/etc/config.json  
-    sudo chmod 750 /home/amatyr/etc/config.json  
     nano /home/amatyr/etc/config.json
     
 
