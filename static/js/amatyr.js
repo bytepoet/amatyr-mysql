@@ -167,6 +167,7 @@ var AmatYr = function(apiurl) {
         var vals = ['outTemp', 'windSpeed', 'dayrain', 'barometer', 'windGust', 'heatindex', 'windchill'];
         vals.forEach(function(k, v) {
             keys.forEach(function(func, idx) {
+                if(func=='min' && k=='dayrain') return;
                 // set key for rivets to set up proper setters and getters
                 record_weather.current[func+k+'date'] = '';
                 record_weather.current[func+k+'value'] = '';
@@ -175,9 +176,12 @@ var AmatYr = function(apiurl) {
                 // like min daily_rain or min windSpeed
                 d3.json(apiurl + 'record/'+k+'/'+func+'?start='+year, function(json) { 
                     if (json) {
-                        record_weather.current[func+k+'date'] = json[0].datetime;
+                        console.log(func, k, json);
+                        if(json[0].hasOwnProperty('datetime') ){
+                            record_weather.current[func+k+'date'] = json[0].datetime;
+                            record_weather.current[func+k+'age'] = $.timeago(json[0].datetime);
+                        }
                         record_weather.current[func+k+'value'] = json[0][k];
-                        record_weather.current[func+k+'age'] = json[0].age;
                     }
                 });
             })

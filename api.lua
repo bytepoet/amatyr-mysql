@@ -63,7 +63,7 @@ function max(match)
 
     local sql = [[
         SELECT
-            DAY(FROM_UNIXTIME(datetime)) AS datetime,
+            ]]..date_trunc_mysql('DAY', 'FROM_UNIXTIME(dateTime)')..[[ AS datetime,
             MAX(]]..key..[[) AS ]]..key..[[
         FROM ]]..conf.db.table..[[
         WHERE YEAR(FROM_UNIXTIME(dateTime)) < 2013
@@ -90,11 +90,11 @@ end
 -- Last 60 samples from db
 function recent(match)
     return dbreq([[SELECT
-    *, DAY(FROM_UNIXTIME(datetime)) as day, FROM_UNIXTIME(datetime) as datetime,
+    *, DAY(FROM_UNIXTIME(dateTime)) as day, FROM_UNIXTIME(datetime) as datetime,
     (
         SELECT SUM(b.rain)
         FROM (
-            SELECT DAY(FROM_UNIXTIME(datetime)) AS bday, rain
+            SELECT DAY(FROM_UNIXTIME(dateTime)) AS bday, rain
             FROM ]]..conf.db.table..[[
             ORDER BY datetime DESC
             LIMIT 60
@@ -169,11 +169,11 @@ function record(match)
     local sql
 
     -- Special handling for rain since it needs a sum
-    if key == 'dayrain' then
+    if key == 'dayrain' and func == 'MAX' then
         -- Not valid with any other value than max
         sql = [[
         SELECT
-        DISTINCT FROM_UNIXTIME(datetime) AS datetime,
+        DISTINCT ]]..date_trunc_mysql('DAY','FROM_UNIXTIME(dateTime)')..[[ AS datetime,
         SUM(rain) AS dayrain
         FROM ]]..conf.db.table..[[
         ]]..where..[[
@@ -191,8 +191,7 @@ function record(match)
     else
         sql = [[
         SELECT
-            FROM_UNIXTIME(datetime) as datetime,
-            TIMEDIFF(NOW(), FROM_UNIXTIME(datetime)) AS age,
+            FROM_UNIXTIME(dateTime) as datetime,
             ]]..key..[[
         FROM ]]..conf.db.table..[[
         WHERE
@@ -226,7 +225,7 @@ function by_dateunit(match)
     local where, andwhere = getDateConstrains(ngx.req.get_uri_args()['start'])
     local sql = dbreq([[
     SELECT
-        ]]..unit..[[(FROM_UNIXTIME(datetime)) AS datetime,
+        ]]..date_trunc_mysql(unit, 'FROM_UNIXTIME(dateTime)')..[[ AS datetime,
         AVG(outTemp) as outTemp,
         MIN(outTemp) as tempmin,
         MAX(outTemp) as tempmax,
@@ -244,57 +243,41 @@ function by_dateunit(match)
         AVG(windchill) as windchill
     FROM ]]..conf.db.table..[[ as a
     LEFT OUTER JOIN (
-        SELECT DISTINCT
-            ]]..unit..[[(FROM_UNIXTIME(datetime)) AS unit,
-            (
-                SELECT SUM(rain)
-                FROM (
-                    SELECT DISTINCT ]]..unit..[[(FROM_UNIXTIME(datetime)) AS cunit, rain
-                    FROM ]]..conf.db.table..[[ ]]..where..[[
-                    ORDER BY 1
-                ) as c
-                WHERE unit=cunit
-            ) AS dayrain
-        FROM ]]..conf.db.table..[[ ]]..where..[[
+        SELECT
+            DISTINCT ]]..date_trunc_mysql(unit, 'FROM_UNIXTIME(dateTime)')..[[ AS unit,
+            CASE WHEN @_day <> ]]..date_trunc_mysql('DAY', 'FROM_UNIXTIME(dateTime)')..[[ THEN @r := 0 ELSE 1 END as reset,
+            @_day := ]]..date_trunc_mysql('DAY', 'FROM_UNIXTIME(dateTime)')..[[ as date,
+            (@r := @r + rain) AS dayrain
+        FROM (
+            SELECT @_day := 'N'
+        ) var,
+        (
+            SELECT dateTime, rain
+            FROM ]]..conf.db.table..[[ c
+            ]]..where..[[
+            ORDER BY dateTime
+        ) ao
         ORDER BY 1
     ) AS b
-    ON a.datetime = b.unit
+    ON ]]..date_trunc_mysql(unit, 'FROM_UNIXTIME(a.dateTime)')..[[ = b.unit
     ]]..where..[[
     GROUP BY 1
-    ORDER BY datetime
-    ]])
-    return sql
-end
-
-function day(match)
-    local where, andwhere = getDateConstrains(ngx.req.get_uri_args()['start'])
-    local sql = dbreq([[
-    SET @dr=0;
-    SELECT
-        *, @dr:=@dr+rain AS dayrain
-    FROM ]]..conf.db.table..[[
-    ]]..where..[[
-    ORDER BY datetime
+    ORDER BY 1
     ]])
     return sql
 end
 
 function year(match)
-    -- This function generates stats into a new table
-    -- which is updated max once a day
-    -- first it checks the latest record in the stats table
-    -- and if latest date is older than today
-    -- it will recreate the table
     local year = match[1]
     local syear = year .. '-01-01'
     local where = [[
-        WHERE FROM_UNIXTIME(datetime) BETWEEN DATE ']]..syear..[['
+        WHERE dateTime BETWEEN DATE ']]..syear..[['
         AND DATE ']]..syear..[[' + INTERVAL 1 year
     ]]
-
+    
     local needsupdate = cjson.decode(dbreq[[
         SELECT
-        MAX(datetime) < (NOW() - INTERVAL 24 hour) AS needsupdate
+        MAX(datetime) < (NOW() - INTERVAL '24 hours') AS needsupdate
         FROM days
     ]])
     if needsupdate == ngx.null or needsupdate[1] == nil or needsupdate.error ~= nil then
@@ -313,7 +296,7 @@ function year(match)
         local gendays = dbreq([[
         CREATE TABLE days AS
             SELECT
-                DAY(FROM_UNIXTIME(datetime)) AS datetime,
+                ]]..date_trunc_mysql('DAY', 'FROM_UNIXTIME(dateTime)')..[[ AS datetime,
                 AVG(outTemp) as outTemp,
                 MIN(outTemp) as tempmin,
                 MAX(outTemp) as tempmax,
@@ -333,11 +316,21 @@ function year(match)
             LEFT OUTER JOIN
             (
                 SELECT
-                    DISTINCT DAY(FROM_UNIXTIME(datetime)) AS hour,
-                    SUM(rain) AS dayrain
-                    FROM ]]..conf.db.table..[[ ORDER BY 1
+                    DISTINCT ]]..date_trunc_mysql('DAY', 'FROM_UNIXTIME(dateTime)')..[[ AS hour,
+                    CASE WHEN @_day <> ]]..date_trunc_mysql('DAY', 'FROM_UNIXTIME(dateTime)')..[[ THEN @r := 0 ELSE 1 END as reset,
+                    @_day := ]]..date_trunc_mysql('DAY', 'FROM_UNIXTIME(dateTime)')..[[ as date,
+                    (@r := @r + rain) AS dayrain
+                FROM (
+                    SELECT @_day := 'N'
+                ) var,
+                (
+                    SELECT dateTime, rain
+                    FROM ]]..conf.db.table..[[ c
+                    ORDER BY dateTime
+                ) ao
+                ORDER BY 1
             ) AS b
-            ON a.datetime = b.hour
+            ON ]]..date_trunc_mysql('DAY', 'FROM_UNIXTIME(a.dateTime)')..[[ = b.hour
             GROUP BY 1
             ORDER BY datetime
             ]])
@@ -352,12 +345,16 @@ end
 function windhist(match)
     local where, andwhere = getDateConstrains(ngx.req.get_uri_args()['start'])
     return dbreq([[
-        SELECT count(*), ((windDir/10)*10)+0 as d, avg(windSpeed)*1.94384449 as avg
+        SELECT count(*) as count, ROUND(windDir, -1) as d, avg(windSpeed)*1.94384449 as avg
         FROM ]]..conf.db.table..[[
         ]]..where..[[
         GROUP BY 2
         ORDER BY 2
     ]])
+end
+
+function date_trunc_mysql(interval, timestamp)
+    return [[DATE_FORMAT(date_add('1900-01-01', interval TIMESTAMPDIFF(]]..interval..[[, '1900-01-01', ]]..timestamp..[[) ]]..interval..[[), '%Y-%m-%d %T')]]
 end
 
 local class_mt = {

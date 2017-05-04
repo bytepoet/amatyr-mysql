@@ -121,7 +121,7 @@ var WindRose = function() {
                 direction = ""+direction;
             }
             // count up all samples with this key
-            totals[direction] += datum.count;
+            totals[direction] += datum.count*1;
             // add in the average speed * count from this key
             speeds[direction] += datum.count * datum.avg;
         }
@@ -225,7 +225,7 @@ var WindRose = function() {
         from: 34,
         to: probabilityToRadius
     }   
-    var windSpeedArcOptions = {
+    var windspeedArcOptions = {
         width: 5,
         from: 34,
         to: speedToRadius
@@ -284,7 +284,7 @@ var WindRose = function() {
         if (container == "#windrose") {
             updateComplexArcs(vis, rollup, speedToColor, speedText, windroseArcOptions, probArcTextT);
         } else {
-            updateComplexArcs(vis, rollup, probabilityToColor, probabilityText, windSpeedArcOptions, speedArcTextT);
+            updateComplexArcs(vis, rollup, probabilityToColor, probabilityText, windspeedArcOptions, speedArcTextT);
         }
     }
 
@@ -365,13 +365,13 @@ var WindRose = function() {
             .text(function(dir) { return that.degreeToWindText(dir); });
 
         //var rollup = rollupForMonths(windroseData, selectedMonthControl.selected());
-        var rollup = rollupForAmatyr(windroseData, months);
+        var rollup = rollupForAmatyr(windroseData);
 
       
         if (container == "#windrose") {
             drawComplexArcs(vis, rollup, speedToColor, speedText, windroseArcOptions, probArcTextT);
         } else {
-            drawComplexArcs(vis, rollup, probabilityToColor, probabilityText, windSpeedArcOptions, speedArcTextT);
+            drawComplexArcs(vis, rollup, probabilityToColor, probabilityText, windspeedArcOptions, speedArcTextT);
         }
         vis.append("svg:text")
            .text(captionText)
