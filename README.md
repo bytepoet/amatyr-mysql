@@ -7,7 +7,7 @@ The software is a modern HTML5 "single page app" using JavaScript to fetch data 
 Primary goal of the project is bringing modern and responsive design, suitable for desktop, tablet and mobile-sized screens. A secondary goal is just playing with new technology because it's fun :-) And I guess a goal is to display some pretty graphs and such for local weather!
 
 ### About this git
-I'm not the creator of amatyr, i just changed some things to work without custom patches and other crutches. You can update anything to newer version freely (except bootstrap if you dont want to change classes in thml pages, if you do - please send me updated version and i will add it here =D) and everything should sstill work.
+I'm not the creator of amatyr, i just changed some things to work without custom patches and other crutches. You can update anything to newer version freely (except bootstrap if you dont want to change classes in thml pages, if you do - please send me updated version and i will add it here =D) and everything should still work.
 
 ### Frontend Components
 
