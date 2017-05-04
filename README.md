@@ -97,8 +97,7 @@ I'm not the creator of amatyr, i just changed some things to work without custom
     git clone https://github.com/Zulmamwe/amatyr-mysql.git /home/amatyr
 
     download bootstrap and fontawesome  
-    (bootstrap is old, im too lazy to rewrite this code)  
-    (more important - it's working so i dont bother)
+    (bootstrap is old, im too lazy to rewrite this code, it's working so i dont bother)
     >cd /home/amatyr/static  
     sudo apt-get install unzip  
     #bootstrap  
