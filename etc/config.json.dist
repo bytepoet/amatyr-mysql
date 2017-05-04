@@ -2,8 +2,8 @@
     "db": {
         "host": "127.0.0.1",
         "database": "weewx",
-        "user": "w",
-        "password": "w",
+        "user": "weewx",
+        "password": "password",
         "table": "archive",
         "columns": {
             "datetime": "datetime",
@@ -33,5 +33,5 @@
         "url": "http://yr.no/snap.jpg"
 
     },
-    "firstyear": 2013
+    "firstyear": 2017
 }
