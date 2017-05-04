@@ -94,8 +94,7 @@ I'm not the creator of amatyr, i just changed some things to work without custom
 5. Clone git and edit configs
 
     >sudo mkdir /home/amatyr  
-    git clone https://github.com/Zulmamwe/amatyr-mysql.git /home/amatyr  
-    sudo chmod 750 /home/amatyr/etc/config.json
+    git clone https://github.com/Zulmamwe/amatyr-mysql.git /home/amatyr
 
     download bootstrap and fontawesome  
     (bootstrap is old, im too lazy to rewrite this code, it's working so i dont bother)
@@ -115,7 +114,9 @@ I'm not the creator of amatyr, i just changed some things to work without custom
 
     change password to db, set name, map, cam, year
     >cp /home/amatyr/etc/config.json.dist /home/amatyr/etc/config.json  
+    sudo chmod 750 /home/amatyr/etc/config.json  
     nano /home/amatyr/etc/config.json
+    
 
     change server name
     >nano /home/amatyr/nginx.conf
