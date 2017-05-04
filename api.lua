@@ -90,19 +90,28 @@ end
 -- Last 60 samples from db
 function recent(match)
     return dbreq([[SELECT
-    *, DAY(FROM_UNIXTIME(dateTime)) as day, FROM_UNIXTIME(datetime) as datetime,
-    (
-        SELECT SUM(b.rain)
+    FROM_UNIXTIME(dateTime) as datetime,
+    outTemp, dewpoint, rain, windSpeed, windGust, windDir,
+    barometer, outHumidity, inTemp, inHumidity, heatindex, windchill,
+    b.dayrain
+    FROM ]]..conf.db.table..[[ a
+    LEFT JOIN (
+        SELECT
+            dateTime as date,
+            CASE WHEN @_dt <> FROM_UNIXTIME(dateTime) THEN @r := 0 ELSE 1 END as reset,
+            @_dt := FROM_UNIXTIME(dateTime) as dt,
+            (@r := @r + rain) AS dayrain
         FROM (
-            SELECT DAY(FROM_UNIXTIME(dateTime)) AS bday, rain
-            FROM ]]..conf.db.table..[[
-            ORDER BY datetime DESC
-            LIMIT 60
-        ) AS b
-        WHERE day=bday
-    ) AS dayrain
-    FROM ]]..conf.db.table..[[
-    ORDER BY datetime DESC 
+            SELECT @_dt := 'N'
+        ) var,
+        (
+            SELECT dateTime, rain
+            FROM ]]..conf.db.table..[[ c
+            ORDER BY dateTime
+        ) ao
+        ORDER BY dateTime
+    ) b ON a.dateTime=b.date
+    ORDER BY dateTime DESC 
     LIMIT 60]])
 end
 
@@ -174,10 +183,28 @@ function record(match)
         sql = [[
         SELECT
         DISTINCT ]]..date_trunc_mysql('DAY','FROM_UNIXTIME(dateTime)')..[[ AS datetime,
-        SUM(rain) AS dayrain
-        FROM ]]..conf.db.table..[[
+        b.dayrain
+        FROM ]]..conf.db.table..[[ AS a
+        LEFT JOIN (
+            SELECT
+                DISTINCT ]]..date_trunc_mysql('DAY', 'FROM_UNIXTIME(dateTime)')..[[ AS day,
+                CASE WHEN @_day <> ]]..date_trunc_mysql('DAY', 'FROM_UNIXTIME(dateTime)')..[[ THEN @r := 0 ELSE 1 END as reset,
+                @_day := ]]..date_trunc_mysql('DAY', 'FROM_UNIXTIME(dateTime)')..[[ as date,
+                (@r := @r + rain) AS dayrain
+            FROM (
+                SELECT @_day := 'N'
+            ) var,
+            (
+                SELECT dateTime, rain
+                FROM ]]..conf.db.table..[[ c
+                ]]..where..[[
+                ORDER BY dateTime
+            ) ao
+            ORDER BY dayrain
+        ) AS b
+        ON ]]..date_trunc_mysql('DAY', 'FROM_UNIXTIME(a.dateTime)')..[[ = b.day
         ]]..where..[[
-        ORDER BY dayrain DESC
+        ORDER BY dayrain DESC, datetime DESC
         LIMIT 1
         ]]
     elseif func == 'SUM' then
