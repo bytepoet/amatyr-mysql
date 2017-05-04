@@ -129,7 +129,7 @@ local function getDateConstrains(startarg, interval)
             start = "CURRENT_DATE - INTERVAl 1 day"
             endpart = '1 day'
         elseif string.upper(startarg) == '3DAY' then
-            start = "CURRENT_DATE - INTERVAL 3 day"
+            start = "NOW() - INTERVAL 3 day"
             endpart = '3 day'
         elseif string.upper(startarg) == 'WEEK' then
             start = "CURRENT_DATE - INTERVAL 1 week"
@@ -143,7 +143,7 @@ local function getDateConstrains(startarg, interval)
             start = "CURRENT_DATE - INTERVAL 1 MONTH"
             endpart = "1 MONTH"
         elseif string.upper(startarg) == 'YEAR' then
-            start = "CURRENT_DATE - INTERVAL 1 YEAR"
+            start = date_trunc_mysql('YEAR', 'NOW()').." - INTERVAL 1 YEAR"
             endpart = "1 year"
         elseif string.upper(startarg) == 'ALL' then
             start = "DATE '1900-01-01'" -- Should be old enough :-)
