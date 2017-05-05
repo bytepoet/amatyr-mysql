@@ -28,7 +28,7 @@ I'm not the creator of amatyr, i just changed some things to work without custom
 -   MySQL
 
 ### Install with bash script
-This script clone this git automatically so just download setup.sh, execute it and just follow instructions:
+This script clone this git automatically so just download setup.sh, execute it and follow instructions:
 >wget https://raw.githubusercontent.com/Zulmamwe/amatyr-mysql/master/setup.sh  
 ./setup.sh
 
