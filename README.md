@@ -41,7 +41,7 @@ I'm not the creator of amatyr, i just changed some things to work without custom
 
     dont forget to change 'password' to actual password
     > sudo apt-get install mysql-server  
-    mysql -u root -p -e "CREATE USER 'weewx'@'localhost' IDENTIFIED BY 'password'; GRANT ALL PRIVILEGES ON *.* TO 'weewx'@'localhost'; FLUSH PRIVILEGES;" 
+    mysql -u root -p -e "CREATE USER 'weewx'@'localhost' IDENTIFIED BY 'password'; GRANT ALL PRIVILEGES ON \*.\* TO 'weewx'@'localhost'; FLUSH PRIVILEGES;" 
     
     disabling ONLY_FULL_GROUP_BY  
     add this to the end of the file /etc/mysql/my.cnf  
