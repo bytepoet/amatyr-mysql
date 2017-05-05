@@ -27,8 +27,12 @@ I'm not the creator of amatyr, i just changed some things to work without custom
 -   Openresty (nginx + luajit)
 -   MySQL
 
+### Install with bash script
+This script clone this git automatically so just download setup.sh, execute it and just follow instructions:
+>./setup.sh
 
-### Installation
+
+### Manual Installation
 
 1. Install weewx
 
