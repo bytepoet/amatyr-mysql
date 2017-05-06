@@ -4,7 +4,7 @@
 wget -qO - http://weewx.com/keys.html | sudo apt-key add -
 wget -qO - http://weewx.com/apt/weewx.list | sudo tee /etc/apt/sources.list.d/weewx.list
 sudo apt-get update
-sudo apt-get install weewx python-mysqldb mysql-server
+sudo apt-get install weewx python-mysqldb mysql-server -y
 
 read -p "Enter password for new database user weewx: " dbpassword
 echo "(Now root password)"
@@ -27,7 +27,7 @@ cd /home
 wget https://openresty.org/download/openresty-1.11.2.3.tar.gz
 tar -xvf openresty-1.11.2.3.tar.gz
 cd openresty-1.11.2.3
-apt-get install libreadline-dev libncurses5-dev libpcre3-dev libssl-dev perl make build-essential curl libxslt1-dev libgd-dev libgeoip-dev
+apt-get install libreadline-dev libncurses5-dev libpcre3-dev libssl-dev perl make build-essential curl libxslt1-dev libgd-dev libgeoip-dev -y
 ./configure --with-luajit --with-http_addition_module --with-http_dav_module --with-http_geoip_module --with-http_gzip_static_module --with-http_image_filter_module --with-http_realip_module --with-http_stub_status_module --with-http_ssl_module --with-http_sub_module --with-http_xslt_module --with-ipv6
 make install
 cd /home
@@ -40,7 +40,7 @@ git clone https://github.com/Zulmamwe/amatyr-mysql.git /home/amatyr
 
 #bootstrap and fa
 cd /home/amatyr/static
-sudo apt-get install unzip
+sudo apt-get install unzip -y
 #bootstrap
 wget http://getbootstrap.com/2.3.2/assets/bootstrap.zip
 unzip bootstrap.zip
