@@ -18,7 +18,7 @@ service mysql restart
 #changing weewx.conf
 sed -i 's/database = archive_sqlite/database = archive_mysql/' /etc/weewx/weewx.conf
 wconf_mysql_line=$(cat /etc/weewx/weewx.conf | grep -n "\[\[MySQL\]\]" | grep -Eo '^[^:]+')
-ommand="sed -i '${wconf_mysql_line}~1s/password = .*$/password = ${dbpassword}$/' /etc/weewx/weewx.conf"
+command="sed -i '${wconf_mysql_line}~1s/password = .*$/password = ${dbpassword}$/' /etc/weewx/weewx.conf"
 eval "$command"
 service weewx restart
 
